@@ -7,7 +7,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
 
 public class Curvature2Drive extends DriveCommand {
-    private final double QUICKSTOP_THRESHOLD = 0.2d;
+    private final double QUICKSTOP_THRESHOLD = 0.9d;
     private final double QUICKSTOP_ALPHA = 0.1d;
     private double quickStopAccumulator;
 
@@ -18,18 +18,23 @@ public class Curvature2Drive extends DriveCommand {
     @Override
     public void execute() {
         // Get joystick inputs
-        final double throttle = RobotContainer.getRightJoystick().getX();
-        final double turn = RobotContainer.getRightJoystick().getY();
+        final double throttle = RobotContainer.getRightJoystick().getY();
+        final double turn = RobotContainer.getRightJoystick().getX();
+
+        boolean quickTurn = RobotContainer.getRightJoystick().getRawButton(Constants.QUICKTURN_CH);
+        if (Math.abs(throttle) < 0.2d) {
+            quickTurn = true;
+        }
 
         // Get drive signal
         final DriveSignal signal = calculateDrive(throttle, turn,
-                RobotContainer.getRightJoystick().getRawButton(Constants.QUICKTURN_CH));
+                quickTurn);
 
         // For debugging, log signal output
-        System.out.println(signal);
+//        System.out.println(signal);
 
         // Set motor values
-//        this.setDrive(signal);
+        this.setDrive(signal);
     }
 
     private final DriveSignal calculateDrive(double xSpeed, double zRotation, boolean quickTurn) {

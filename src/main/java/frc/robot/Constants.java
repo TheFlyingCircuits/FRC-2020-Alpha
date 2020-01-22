@@ -29,7 +29,7 @@ public final class Constants {
     public static final int RJS_CH = 0;
 
     /* JOYSTICK BUTTONS */
-    public static final int QUICKTURN_CH = 3; // TODO correct channel
+    public static final int QUICKTURN_CH = 2; // TODO correct channel
 
     /* ROBOT */
     public static final double WHEEL_DISTANCE = 21.0;

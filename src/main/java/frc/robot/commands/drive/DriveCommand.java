@@ -32,7 +32,7 @@ public abstract class DriveCommand extends CommandBase {
         this.driveTrain.getBLEncoder().setPositionConversionFactor(1);
 
         // set brake mode
-        setBrakeMode(IdleMode.kCoast);
+        setBrakeMode(IdleMode.kBrake);
     }
 
     protected final void setBrakeMode(IdleMode mode) {
