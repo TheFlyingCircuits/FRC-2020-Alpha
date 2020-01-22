@@ -33,7 +33,7 @@ public class RobotContainer {
 
     /* SUBSYSTEMS */
     @Getter
-    private final DriveTrain driveTrain = new DriveTrain();
+    private final DriveTrain driveTrain = DriveTrain.getInstance();
 
     /* COMMANDS */
     private final ArcadeDrive arcadeDriveCMD = new ArcadeDrive(driveTrain);
@@ -42,9 +42,9 @@ public class RobotContainer {
 
     /* CONTROLS */
     @Getter
-    private static final Joystick rightJoystick = new Joystick(Constants.RJS_CH);
+    private static final Joystick rightJoystick = new Joystick(RobotConstants.RJS_CH);
     @Getter
-    private static final Joystick leftJoystick = new Joystick(Constants.LJS_CH);
+    private static final Joystick leftJoystick = new Joystick(RobotConstants.LJS_CH);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.

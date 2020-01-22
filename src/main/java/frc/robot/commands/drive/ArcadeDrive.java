@@ -2,7 +2,7 @@ package frc.robot.commands.drive;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import frc.robot.RobotConstants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
@@ -68,19 +68,19 @@ public class ArcadeDrive extends CommandBase {
         final double avgPosition = ( this.driveTrain.getFREncoder().getPosition() + this.driveTrain.getFLEncoder().getPosition()) / 2;
         final double avgVelocity = ( this.driveTrain.getFREncoder().getVelocity() + this.driveTrain.getFLEncoder().getVelocity()) / 2;
 
-        final double rightVelocity = this.driveTrain.getFREncoder().getVelocity() * Constants.velocityFactorA;
-        final double leftVelocity = this.driveTrain.getFLEncoder().getVelocity() * Constants.velocityFactorA;
+        final double rightVelocity = this.driveTrain.getFREncoder().getVelocity() * RobotConstants.velocityFactorA;
+        final double leftVelocity = this.driveTrain.getFLEncoder().getVelocity() * RobotConstants.velocityFactorA;
 
-        final double turns = avgPosition / Constants.encoderPerRotation;
+        final double turns = avgPosition / RobotConstants.encoderPerRotation;
 
-        final double radius = (Constants.WHEEL_DISTANCE / 2) * (leftVelocity + rightVelocity) / (rightVelocity + leftVelocity);
+        final double radius = (RobotConstants.WHEEL_DISTANCE / 2) * (leftVelocity + rightVelocity) / (rightVelocity + leftVelocity);
         final double curvature = 1 / radius;
 
-        final double angle = 1 / Constants.WHEEL_DISTANCE * (rightVelocity - leftVelocity);
+        final double angle = 1 / RobotConstants.WHEEL_DISTANCE * (rightVelocity - leftVelocity);
         this.angles += angle;
 
 //        Robot.log("Distance: %sin, Velocity: %sin/s", turns * Constants.wheelCircumferenceA, avgVelocity * Constants.velocityFactorA);
-        Robot.log("R: %sin/s, L: %sin/s, P: %sin", Math.round(rightVelocity), Math.round(leftVelocity), avgPosition * Constants.positionFactorA);
+        Robot.log("R: %sin/s, L: %sin/s, P: %sin", Math.round(rightVelocity), Math.round(leftVelocity), avgPosition * RobotConstants.positionFactorA);
 //        Robot.log("Angle: %s", angles * 180 / Math.PI);
     }
 

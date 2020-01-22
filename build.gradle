@@ -56,6 +56,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
     testImplementation 'junit:junit:4.12'
 
+    // Google Guava Library
+    implementation "com.google.guava:guava:28.2-jre"
+
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)

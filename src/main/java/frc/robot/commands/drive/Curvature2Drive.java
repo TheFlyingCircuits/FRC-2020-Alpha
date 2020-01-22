@@ -2,34 +2,40 @@ package frc.robot.commands.drive;
 
 import frc.lib.Utils;
 import frc.lib.util.DriveSignal;
-import frc.robot.Constants;
+import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
 
 public class Curvature2Drive extends DriveCommand {
     private final double QUICKSTOP_THRESHOLD = 0.2d;
     private final double QUICKSTOP_ALPHA = 0.1d;
-    private double quickStopAccumulator;
+    private double quickStopAccumulator = 0.0;
 
     public Curvature2Drive(DriveTrain subsystem) {
         super(subsystem);
     }
 
     @Override
+    public void initialize() {
+        super.initialize();
+        this.driveTrain.setBrakes(true);
+    }
+
+    @Override
     public void execute() {
         // Get joystick inputs
-        final double throttle = RobotContainer.getRightJoystick().getX();
-        final double turn = RobotContainer.getRightJoystick().getY();
+        final double throttle = RobotContainer.getRightJoystick().getY();
+        final double turn = RobotContainer.getRightJoystick().getX();
 
         // Get drive signal
         final DriveSignal signal = calculateDrive(throttle, turn,
-                RobotContainer.getRightJoystick().getRawButton(Constants.QUICKTURN_CH));
+                RobotContainer.getRightJoystick().getRawButton(RobotConstants.QUICKTURN_CH));
 
         // For debugging, log signal output
-        System.out.println(signal);
+//        System.out.println(signal);
 
         // Set motor values
-//        this.setDrive(signal);
+        this.setDrive(signal);
     }
 
     private final DriveSignal calculateDrive(double xSpeed, double zRotation, boolean quickTurn) {

@@ -15,7 +15,7 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {
+public final class RobotConstants {
     /* MOTOR CONTROLLERS */
     public static final int FR_CH = 3;
     public static final int BR_CH = 4;
@@ -29,7 +29,7 @@ public final class Constants {
     public static final int RJS_CH = 0;
 
     /* JOYSTICK BUTTONS */
-    public static final int QUICKTURN_CH = 3; // TODO correct channel
+    public static final int QUICKTURN_CH = 2; // TODO correct channel
 
     /* ROBOT */
     public static final double WHEEL_DISTANCE = 21.0;
@@ -39,6 +39,6 @@ public final class Constants {
     public static final double positionFactorA = wheelCircumferenceA / encoderPerRotation;
     public static final double velocityFactorA = 10.0 / 240.0;
 
-    private Constants() {
+    private RobotConstants() {
     }
 }
