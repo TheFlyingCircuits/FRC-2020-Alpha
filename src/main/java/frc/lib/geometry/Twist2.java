@@ -1,5 +1,7 @@
 package frc.lib.geometry;
 
+import frc.lib.Utils;
+
 public class Twist2 {
     public static final Twist2 IDENTITY = new Twist2(0.0d, 0.0d, 0.0d);
 
@@ -26,7 +28,7 @@ public class Twist2 {
     }
 
     public double curvature() {
-        if (Math.abs(this.dtheta) < Geometry.EPSILON && this.norm() < Geometry.EPSILON) {
+        if (Math.abs(this.dtheta) < Utils.EPSILON && this.norm() < Utils.EPSILON) {
             return 0.0d;
         }
 

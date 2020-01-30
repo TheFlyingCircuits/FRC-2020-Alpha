@@ -21,6 +21,8 @@ public final class Constants {
     public static final int BR_CH = 4;
     public static final int FL_CH = 1;
     public static final int BL_CH = 2;
+    public static final int SHOOTERA_CH = 8;
+    public static final int SHOOTERB_CH = 9;
 
     public static final int CURRENT_LIMIT = 40;
 
@@ -38,6 +40,11 @@ public final class Constants {
     public static final double wheelCircumferenceA = wheelDiameterA * Math.PI;
     public static final double positionFactorA = wheelCircumferenceA / encoderPerRotation;
     public static final double velocityFactorA = 10.0 / 240.0;
+
+    /* ENCODERS */
+    public static final double TPR = 4096.0;
+    public static final double VTR = (5.0/7.11)/238.0;
+    public static final double IPT = (4.0 * Math.PI)/5.45;
 
     private Constants() {
     }

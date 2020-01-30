@@ -1,5 +1,6 @@
 package frc.lib.geometry;
 
+import frc.lib.Utils;
 import lombok.Getter;
 
 public class Translation2 implements ITranslation2<Translation2> {
@@ -66,8 +67,8 @@ public class Translation2 implements ITranslation2<Translation2> {
     }
 
     public boolean epsilonEquals(final Translation2 other, double epsilon) {
-        return Geometry.epsilonEquals(this.x, other.x, epsilon) &&
-                Geometry.epsilonEquals(this.y, other.y, epsilon);
+        return Utils.epsilonEquals(this.x, other.x, epsilon) &&
+                Utils.epsilonEquals(this.y, other.y, epsilon);
     }
 
     public static Rotation2 getAngle(final Translation2 a, final Translation2 b) {
@@ -75,7 +76,7 @@ public class Translation2 implements ITranslation2<Translation2> {
         if (Double.isNaN(cos)) {
             return new Rotation2();
         }
-        return Rotation2.fromTheta(Math.acos(Geometry.limit(cos, 1.0d)));
+        return Rotation2.fromRadians(Math.acos(Utils.limit(cos, 1.0d)));
     }
 
     public static double dot(final Translation2 a, final Translation2 b) {
@@ -97,7 +98,15 @@ public class Translation2 implements ITranslation2<Translation2> {
             return false;
         }
 
-        return distance((Translation2) other) < Geometry.EPSILON;
+        return distance((Translation2) other) < Utils.EPSILON;
+    }
+
+    @Override
+    public String toString() {
+        return "(" +
+                "" + x +
+                ", " + y +
+                ')';
     }
 
     @Override

@@ -8,8 +8,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.lib.command.CommandScheduler;
+import frc.lib.scheduling.RobotScheduler;
+import frc.robot.commands.drive.Stopped;
+import frc.robot.commands.drive.TeleopArcadeDrive;
+import frc.robot.commands.drive.TeleopCurvatureDrive;
+import frc.robot.commands.shooter.ManualShoot;
+import frc.robot.commands.shooter.NoShoot;
+import frc.robot.subsystems.Control;
+import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.RobotTracker;
+import frc.lib.subsystem.SubsystemManager;
+import frc.robot.subsystems.Shooter;
 import frc.robot.util.LogFormatter;
 
 import java.util.logging.ConsoleHandler;
@@ -25,109 +35,22 @@ import java.util.logging.Logger;
 public class Robot extends TimedRobot {
 
   private static final Logger logger = Logger.getLogger("Robot");
-
-  private Command m_autonomousCommand;
-
-  private RobotContainer robotContainer;
-
+  /* SCHEDULER */
+  private final RobotScheduler enabledScheduler = new RobotScheduler();
+  private final RobotScheduler disabledScheduler = new RobotScheduler();
+  /* SUBSYSTEMS */
+  private final SubsystemManager subsystemManager = SubsystemManager.getInstance();
+  private final DriveTrain driveTrain = DriveTrain.getInstance();
+  private final Control control = Control.getInstance();
+  private final Shooter shooter = Shooter.getInstance();
+  private final RobotTracker robotTracker = RobotTracker.getInstance();
   public static Logger getLogger() {
     return Robot.logger;
   }
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
-    /* INITIALIZE LOGGER */
-    ConsoleHandler consoleHandler = new ConsoleHandler();
-    consoleHandler.setFormatter(new LogFormatter());
-    logger.addHandler(consoleHandler);
-
-    /* INITIALIZE SUBSYSTEMS */
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    robotContainer = new RobotContainer();
-  }
-
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-  }
-
-  /**
-   * This function is called once each time the robot enters Disabled mode.
-   */
-  @Override
-  public void disabledInit() {
-  }
-
-  @Override
-  public void disabledPeriodic() {
-  }
-
-  /**
-   * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
-   */
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
-
-  /**
-   * This function is called periodically during autonomous.
-   */
-  @Override
-  public void autonomousPeriodic() {
-  }
-
-  @Override
-  public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
-
-  /**
-   * This function is called periodically during operator control.
-   */
-  @Override
-  public void teleopPeriodic() {
-  }
-
-  @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-  }
-
-  /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
-  }
+  /* COMMANDS */
+  private final TeleopArcadeDrive arcadeDrive = new TeleopArcadeDrive();
+  private final TeleopCurvatureDrive curvatureDrive = new TeleopCurvatureDrive();
 
   public static void log(String message) {
     logger.log(Level.INFO, message);
@@ -143,5 +66,106 @@ public class Robot extends TimedRobot {
 
   public static void log(Level level, String message, Object... args) {
     logger.log(level, String.format(message, args));
+  }
+
+  /**
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
+   */
+  @Override
+  public void robotInit() {
+    // setup logger
+    // TODO better logging system
+    ConsoleHandler consoleHandler = new ConsoleHandler();
+    consoleHandler.setFormatter(new LogFormatter());
+    logger.addHandler(consoleHandler);
+
+    // load subsystems
+    subsystemManager.loadSubsystem(driveTrain);
+    subsystemManager.loadSubsystem(robotTracker);
+    subsystemManager.loadSubsystem(shooter);
+    subsystemManager.loadSubsystem(control);
+
+
+    // scheduling
+    subsystemManager.registerLoops(enabledScheduler, disabledScheduler);
+  }
+
+  /**
+   * This function is called every robot packet, no matter the mode. Use this for items like
+   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+   *
+   * <p>This runs after the mode specific periodic functions, but before
+   * LiveWindow and SmartDashboard integrated updating.
+   */
+  @Override
+  public void robotPeriodic() {
+    // Push updates to smart dashboard
+    subsystemManager.updateDashboard();
+  }
+
+  /**
+   * This function is called once each time the robot enters Disabled mode.
+   */
+  @Override
+  public void disabledInit() {
+    // handle schedulers
+    enabledScheduler.stop();
+    disabledScheduler.start();
+
+
+  }
+
+  @Override
+  public void disabledPeriodic() {
+
+  }
+
+  @Override
+  public void autonomousInit() {
+    // handle schedulers
+    disabledScheduler.stop();
+    enabledScheduler.start();
+  }
+
+  @Override
+  public void autonomousPeriodic() {
+  }
+
+  @Override
+  public void teleopInit() {
+    // update default commands
+    driveTrain.setDefaultCommand(curvatureDrive);
+    shooter.setDefaultCommand(new NoShoot());
+
+    // handle schedulers
+    disabledScheduler.stop();
+    enabledScheduler.start();
+
+    // reset drive and tracking
+    driveTrain.reset();
+    robotTracker.reset();
+  }
+  
+  @Override
+  public void teleopPeriodic() {
+    CommandScheduler.getInstance().tick();
+  }
+
+  @Override
+  public void testInit() {
+    // handle schedulers
+    disabledScheduler.stop();
+    enabledScheduler.stop();
+
+    // Cancels all running commands at the start of test mode.
+    CommandScheduler.getInstance().cancelAll();
+  }
+
+  /**
+   * This function is called periodically during test mode.
+   */
+  @Override
+  public void testPeriodic() {
   }
 }

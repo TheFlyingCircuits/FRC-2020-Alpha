@@ -1,8 +1,8 @@
 package frc.lib.geometry;
 
-import java.util.concurrent.locks.ReentrantLock;
+import frc.lib.Utils;
 
-public class Rotation2 implements IRotation2 {
+public class Rotation2 implements IRotation2<Rotation2> {
     public static final Rotation2 IDENTITY = new Rotation2();
 
     private double x = Double.NaN;
@@ -39,13 +39,23 @@ public class Rotation2 implements IRotation2 {
         this.theta = theta;
     }
 
+    public Rotation2(Rotation2 other) {
+        x = other.x;
+        y = other.y;
+        theta = other.theta;
+    }
+
     public Rotation2(final Translation2 direction, boolean unit) {
         this(direction.getX(), direction.getY(), unit);
     }
 
-    public double getTheta() {
+    public double getRadians() {
         computeAngle();
         return this.theta;
+    }
+
+    public double getDegrees() {
+        return getRadians() * 180 / Math.PI;
     }
 
     public Rotation2 rotate(final Rotation2 rotation) {
@@ -53,7 +63,7 @@ public class Rotation2 implements IRotation2 {
             return new Rotation2(this.x * rotation.x - this.y * rotation.y,
                     this.x * rotation.y + this.y * rotation.x, true);
         } else {
-            return fromTheta(this.getTheta() + rotation.getTheta());
+            return fromRadians(this.getRadians() + rotation.getRadians());
         }
     }
 
@@ -61,7 +71,7 @@ public class Rotation2 implements IRotation2 {
         if (hasTrig()) {
             return new Rotation2(-y, x, false);
         } else {
-            return fromTheta(getTheta() - Math.PI / 2.0d);
+            return fromRadians(getRadians() - Math.PI / 2.0d);
         }
     }
 
@@ -69,19 +79,19 @@ public class Rotation2 implements IRotation2 {
         if (hasTrig()) {
             return new Rotation2(x, -y, false);
         } else {
-            return fromTheta(-getTheta());
+            return fromRadians(-getRadians());
         }
     }
 
     public boolean isParallel(final Rotation2 rotation) {
         if (hasAngle() && rotation.hasAngle()) {
-            return Geometry.epsilonEquals(this.theta, rotation.theta) ||
-                    Geometry.epsilonEquals(this.theta, clampAngle(rotation.theta + Math.PI));
+            return Utils.epsilonEquals(this.theta, rotation.theta) ||
+                    Utils.epsilonEquals(this.theta, clampAngle(rotation.theta + Math.PI));
         } else if (hasTrig() && rotation.hasTrig()) {
-            return Geometry.epsilonEquals(this.x, rotation.x) && Geometry.epsilonEquals(this.y, rotation.y);
+            return Utils.epsilonEquals(this.x, rotation.x) && Utils.epsilonEquals(this.y, rotation.y);
         } else {
-            return Geometry.epsilonEquals(this.getTheta(), rotation.getTheta()) ||
-                    Geometry.epsilonEquals(this.theta, clampAngle(rotation.theta));
+            return Utils.epsilonEquals(this.getRadians(), rotation.getRadians()) ||
+                    Utils.epsilonEquals(this.theta, clampAngle(rotation.theta));
         }
     }
 
@@ -90,8 +100,17 @@ public class Rotation2 implements IRotation2 {
         return new Translation2(x, y);
     }
 
-    public static Rotation2 fromTheta(double radians) {
+    public static Rotation2 fromRadians(double radians) {
         return new Rotation2(radians, true);
+    }
+
+    public static Rotation2 fromDegrees(double degrees) {
+        return fromRadians(degrees * Math.PI/180.0);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%sº", getDegrees());
     }
 
     protected double clampAngle(double angle) {
@@ -147,7 +166,7 @@ public class Rotation2 implements IRotation2 {
 
     public double tan() {
         computeTrig();
-        if (Math.abs(this.x) < Geometry.EPSILON) {
+        if (Math.abs(this.x) < Utils.EPSILON) {
             if (this.y >= 0.0d) {
                 return Double.POSITIVE_INFINITY;
             } else {
@@ -162,5 +181,16 @@ public class Rotation2 implements IRotation2 {
     @Override
     public Rotation2 getRotation() {
         return this;
+    }
+
+    @Override
+    public Rotation2 interpolate(Rotation2 other, double x) {
+        if (x <= 0.0) {
+            return new Rotation2(this);
+        } else if (x >= 1.0) {
+            return new Rotation2(other);
+        }
+        double angle_diff = inverse().rotate(other).getRadians();
+        return this.rotate(Rotation2.fromRadians(angle_diff * x));
     }
 }

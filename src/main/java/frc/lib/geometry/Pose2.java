@@ -1,5 +1,7 @@
 package frc.lib.geometry;
 
+import frc.lib.Utils;
+
 public class Pose2 implements IPose2<Pose2> {
     public static final Pose2 IDENTITY = new Pose2();
 
@@ -76,8 +78,8 @@ public class Pose2 implements IPose2<Pose2> {
         }
 
         final Twist2 twist = log(this.inverse().transform(other));
-        return Geometry.epsilonEquals(twist.deltaY(), 0.0d)
-                && Geometry.epsilonEquals(twist.deltaTheta(), 0.0d);
+        return Utils.epsilonEquals(twist.deltaY(), 0.0d)
+                && Utils.epsilonEquals(twist.deltaTheta(), 0.0d);
     }
 
     public boolean epsilonEquals(final Pose2 other, double epsilon) {
@@ -104,7 +106,7 @@ public class Pose2 implements IPose2<Pose2> {
     }
 
     public static Twist2 log(final Pose2 transform) {
-        final double dtheta = transform.getRotation().getTheta();
+        final double dtheta = transform.getRotation().getRadians();
         final double half_dtheta = dtheta / 2;
         final double cos_minus_one = transform.getRotation().cos() - 1.0d;
 
@@ -123,11 +125,10 @@ public class Pose2 implements IPose2<Pose2> {
 
     private static Translation2 intersectionInternal(final Pose2 a, final Pose2 b) {
         final Rotation2 ar = a.rotation;
-        final Rotation2 br = b.rotation;
         final Translation2 at = a.translation;
         final Translation2 bt = b.translation;
 
-        final double tanb = br.tan();
+        final double tanb = b.rotation.tan();
         final double t = ((at.getX() - bt.getX()) * tanb + bt.getY() - at.getY())
                 / (ar.sin() - ar.cos() * tanb);
 
@@ -155,6 +156,11 @@ public class Pose2 implements IPose2<Pose2> {
     }
 
     @Override
+    public String toString() {
+        return String.format("(%sin, %sin) with angle %s", this.translation.getX(), this.translation.getY(), this.rotation.toString());
+    }
+
+    @Override
     public double distance(Pose2 other) {
         return Pose2.log(this.inverse().transform(other)).norm();
     }
@@ -165,6 +171,11 @@ public class Pose2 implements IPose2<Pose2> {
             return false;
         }
 
-        return epsilonEquals((Pose2) other, Geometry.EPSILON);
+        return epsilonEquals((Pose2) other, Utils.EPSILON);
+    }
+
+    public Pose2 integrate(Twist2 change) {
+        return new Pose2(this.translation.translate(new Translation2(change.deltaX(), change.deltaY())),
+                this.rotation.rotate(Rotation2.fromRadians(change.deltaTheta())));
     }
 }
