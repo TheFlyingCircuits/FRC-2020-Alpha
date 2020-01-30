@@ -24,7 +24,7 @@ public final class Control extends Subsystem {
     @Getter private final Joystick left = new Joystick(Constants.LJS_CH);
 
     public Control() {
-        super("Control Panel");
+        super("Control");
     }
 
     public double getDriveY() {
