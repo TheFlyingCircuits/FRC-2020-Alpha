@@ -11,6 +11,8 @@ public final class TeleopCurvatureDrive extends CommandBase {
     private double quickStopThreshold, quickStopAlpha;
     private double quickStopAccumulator;
 
+    private final Control control = Control.getInstance();
+
     public TeleopCurvatureDrive() {
         this(0.1, 0.9);
     }
@@ -86,8 +88,6 @@ public final class TeleopCurvatureDrive extends CommandBase {
 
     @Override
     public void tick() {
-        Control control = Control.getInstance();
-
         // get raw inputs
         final double turn = control.getDriveX();
         final double throttle = control.getDriveY();

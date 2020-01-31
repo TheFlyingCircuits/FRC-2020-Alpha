@@ -21,6 +21,8 @@ public final class Constants {
     public static final int BR_CH = 4;
     public static final int FL_CH = 1;
     public static final int BL_CH = 2;
+    public static final int CLIMB_A = 6;
+    public static final int CLIMB_B = 7;
     public static final int SHOOTERA_CH = 8;
     public static final int SHOOTERB_CH = 9;
 

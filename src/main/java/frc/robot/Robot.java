@@ -15,11 +15,8 @@ import frc.robot.commands.drive.TeleopArcadeDrive;
 import frc.robot.commands.drive.TeleopCurvatureDrive;
 import frc.robot.commands.shooter.ManualShoot;
 import frc.robot.commands.shooter.NoShoot;
-import frc.robot.subsystems.Control;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.RobotTracker;
+import frc.robot.subsystems.*;
 import frc.lib.subsystem.SubsystemManager;
-import frc.robot.subsystems.Shooter;
 import frc.robot.util.LogFormatter;
 
 import java.util.logging.ConsoleHandler;
@@ -44,6 +41,7 @@ public class Robot extends TimedRobot {
   private final Control control = Control.getInstance();
   private final Shooter shooter = Shooter.getInstance();
   private final RobotTracker robotTracker = RobotTracker.getInstance();
+  private final Climber climber = Climber.getInstance();
   public static Logger getLogger() {
     return Robot.logger;
   }
@@ -85,7 +83,7 @@ public class Robot extends TimedRobot {
     subsystemManager.loadSubsystem(robotTracker);
     subsystemManager.loadSubsystem(shooter);
     subsystemManager.loadSubsystem(control);
-
+    subsystemManager.loadSubsystem(climber);
 
     // scheduling
     subsystemManager.registerLoops(enabledScheduler, disabledScheduler);

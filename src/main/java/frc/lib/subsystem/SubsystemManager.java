@@ -29,7 +29,7 @@ public final class SubsystemManager implements Scheduler {
     private SubsystemManager() {}
 
     public void loadSubsystem(Subsystem subsystem) {
-        Robot.log(Level.FINE, "Loading subsystem %s...", subsystem);
+        Robot.log(Level.INFO, "Loading subsystem %s...", subsystem);
 
         try {
             // check subsystem status
