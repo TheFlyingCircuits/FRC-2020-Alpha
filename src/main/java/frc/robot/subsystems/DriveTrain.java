@@ -202,11 +202,16 @@ public final class DriveTrain extends CommandSubsystem {
         }
     }
 
-    @Getter public static class IO {
+    @Getter private static class IO {
         private double timestamp;
         private double rightOutput, leftOutput;
         private double rightPosition, leftPosition;
         private double rightVelocity, leftVelocity;
         private int tpr;
+    }
+
+    public enum Mode {
+        RAW,
+        VELOCITY
     }
 }

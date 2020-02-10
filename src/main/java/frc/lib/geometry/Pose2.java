@@ -48,6 +48,11 @@ public class Pose2 implements IPose2<Pose2> {
                 rotation.rotate(other.rotation));
     }
 
+    public Pose2 relativeTo(final Pose2 other) {
+        return new Pose2(other.translation.inverse().translate(this.translation).rotate(other.rotation.inverse()),
+                other.rotation.inverse().rotate(this.rotation));
+    }
+
     public Pose2 inverse() {
         Rotation2 inverseRotation = this.rotation.inverse();
         return new Pose2(this.translation.inverse().rotate(inverseRotation), inverseRotation);
@@ -177,5 +182,13 @@ public class Pose2 implements IPose2<Pose2> {
     public Pose2 integrate(Twist2 change) {
         return new Pose2(this.translation.translate(new Translation2(change.deltaX(), change.deltaY())),
                 this.rotation.rotate(Rotation2.fromRadians(change.deltaTheta())));
+    }
+
+    public static Pose2 of(double x, double y) {
+        return new Pose2(Translation2.of(x, y), Rotation2.IDENTITY);
+    }
+
+    public static Pose2 of(double x, double y, double radians) {
+        return new Pose2(Translation2.of(x, y), Rotation2.fromRadians(radians));
     }
 }

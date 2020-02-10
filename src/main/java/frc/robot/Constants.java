@@ -36,7 +36,7 @@ public final class Constants {
     public static final int QUICKTURN_CH = 2; // TODO correct channel
 
     /* ROBOT */
-    public static final double WHEEL_DISTANCE = 21.0;
+    public static final double TRACK_WIDTH_INCHES = 21.0;
     public static final double encoderPerRotation = (5.35 + 5.38) / 2.0;
     public static final double wheelDiameterA = 4.0;
     public static final double wheelCircumferenceA = wheelDiameterA * Math.PI;
@@ -47,6 +47,12 @@ public final class Constants {
     public static final double TPR = 4096.0;
     public static final double VTR = (5.0/7.11)/238.0;
     public static final double IPT = (4.0 * Math.PI)/5.45;
+
+    /* PATH PURSUIT */
+    public static final double DEFAULT_MAX_SPEED = 10;
+    public static final double DEFAULT_MAX_ACCEL = 1;
+    public static final double DEFAULT_WPT_RADIUS = 5;
+    public static final int IR_SENSOR_ID = 0;
 
     private Constants() {
     }

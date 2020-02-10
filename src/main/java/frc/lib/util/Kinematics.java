@@ -1,10 +1,10 @@
-package frc.robot;
+package frc.lib.util;
 
 import frc.lib.Utils;
 import frc.lib.geometry.Pose2;
 import frc.lib.geometry.Rotation2;
 import frc.lib.geometry.Twist2;
-import frc.lib.util.DriveSignal;
+import frc.robot.Constants;
 
 public final class Kinematics {
 
@@ -13,7 +13,7 @@ public final class Kinematics {
     }
 
     public static Twist2 forwardKinematics(double dLeft, double dRight) {
-        double dTheta = (dRight - dLeft) / Constants.WHEEL_DISTANCE;
+        double dTheta = (dRight - dLeft) / Constants.TRACK_WIDTH_INCHES;
         return forwardKinematics(dLeft, dRight, dTheta);
     }
 
@@ -29,13 +29,18 @@ public final class Kinematics {
     }
 
     public static DriveSignal inverseKinematics(Twist2 velocity) {
+        return new DriveSignal(velocity.deltaX() - Constants.TRACK_WIDTH_INCHES / 2 * velocity.deltaTheta(),
+                velocity.deltaX() + Constants.TRACK_WIDTH_INCHES / 2 * velocity.deltaTheta());
+    }
+
+    public static DriveSignal inverseKinematicsOld(Twist2 velocity) {
         if (Math.abs(velocity.deltaTheta()) < Utils.EPSILON) {
             return new DriveSignal(velocity.deltaX(), velocity.deltaY());
         }
 
         System.out.println(velocity);
 
-        double deltaV = Constants.WHEEL_DISTANCE * velocity.deltaTheta() / (2 * 10); // TODO Factor
+        double deltaV = Constants.TRACK_WIDTH_INCHES * velocity.deltaTheta() / (2 * 10); // TODO Factor
         return new DriveSignal(velocity.deltaX() - deltaV, velocity.deltaY() - deltaV);
     }
 

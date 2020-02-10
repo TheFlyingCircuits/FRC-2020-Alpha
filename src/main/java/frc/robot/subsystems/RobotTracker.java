@@ -125,8 +125,6 @@ public class RobotTracker extends Subsystem {
             final double dLeft = left - lastLeftDistance;
             final double vR = driveTrain.getRightVelocity();
             final double vL = driveTrain.getLeftVelocity();
-            final double tR = driveTrain.getIO().getRightVelocity();
-            final double tL = driveTrain.getIO().getLeftVelocity();
             final Rotation2 theta = io.heading;
 
 //            final double dTheta = (vR - vL) / Constants.WHEEL_DISTANCE;

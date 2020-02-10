@@ -42,6 +42,8 @@ public class Robot extends TimedRobot {
   private final Shooter shooter = Shooter.getInstance();
   private final RobotTracker robotTracker = RobotTracker.getInstance();
   private final Climber climber = Climber.getInstance();
+  private final ColorSensor colorSensor = ColorSensor.getInstance();
+  private final IRSensor irSensor = IRSensor.getInstance();
   public static Logger getLogger() {
     return Robot.logger;
   }
@@ -84,6 +86,8 @@ public class Robot extends TimedRobot {
     subsystemManager.loadSubsystem(shooter);
     subsystemManager.loadSubsystem(control);
     subsystemManager.loadSubsystem(climber);
+    subsystemManager.loadSubsystem(colorSensor);
+    subsystemManager.loadSubsystem(irSensor);
 
     // scheduling
     subsystemManager.registerLoops(enabledScheduler, disabledScheduler);

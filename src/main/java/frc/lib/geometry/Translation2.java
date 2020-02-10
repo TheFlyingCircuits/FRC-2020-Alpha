@@ -9,7 +9,9 @@ public class Translation2 implements ITranslation2<Translation2> {
     @Getter private final double x;
     @Getter private final double y;
 
-    public Translation2() {
+    public
+
+    Translation2() {
         this(0, 0);
     }
 
@@ -66,6 +68,14 @@ public class Translation2 implements ITranslation2<Translation2> {
         return new Translation2(this.x * scale, this.y * scale);
     }
 
+    public Translation2 unit() {
+        return new Translation2(this.x / this.norm(), this.y / this.norm());
+    }
+
+    public Translation2 diff(final Translation2 other) {
+        return new Translation2(this.x - other.x, this.y - other.y);
+    }
+
     public boolean epsilonEquals(final Translation2 other, double epsilon) {
         return Utils.epsilonEquals(this.x, other.x, epsilon) &&
                 Utils.epsilonEquals(this.y, other.y, epsilon);
@@ -112,5 +122,9 @@ public class Translation2 implements ITranslation2<Translation2> {
     @Override
     public Translation2 getTranslation() {
         return this;
+    }
+
+    public static Translation2 of(double x, double y) {
+        return new Translation2(x, y);
     }
 }
